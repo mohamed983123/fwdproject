@@ -8,7 +8,7 @@
   apt: 
     name: ["nodejs"]
     state: latest
-    update_cashe: yes    
+        
 
 - name: "install pm2 Globally"
   npm:
