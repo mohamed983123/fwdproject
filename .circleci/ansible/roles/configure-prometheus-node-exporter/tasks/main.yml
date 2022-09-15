@@ -24,10 +24,10 @@
 - name: "Instal node.js and npm"
   become: true
   shell: |
-    curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
     sudo apt-get install -y nodejs
     node --version
-    npm --version
+    npm  --version
 
 - name: "install pm2"
   become: true
