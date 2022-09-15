@@ -180,20 +180,20 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       - destroy-environment     
 
-configure-infrastructure:
-    docker:
-      - image: python:3.7-alpine3.11
-        environment:
-            ANSIBLE_HOST_KEY_CHECKING: "no"
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints: ["c8:24:5d:1f:20:25:45:f6:f9:d0:42:01:92:83:52:00"]
+  configure-infrastructure:
+     docker:
+       - image: python:3.7-alpine3.11
+         environment:
+             ANSIBLE_HOST_KEY_CHECKING: "no"
+     steps:
+       - checkout
+       - add_ssh_keys:
+           fingerprints: ["c8:24:5d:1f:20:25:45:f6:f9:d0:42:01:92:83:52:00"]
           
-      - attach_workspace:
+     - attach_workspace:
           at: ~/
 
-      - run:
+     - run:
           name: Install dependencies
           command: |
             apk add curl
