@@ -24,14 +24,11 @@
     state: latest
     update_cache: yes
 
-- name: "add node.js from nodesource"
-  become: true
-  shell: |
-    curl -sL https://deb.nodesource.com/setup_13.x
- 
+
 - name: "install node.js13"
   become: true
   shell: |
+    curl -sL https://deb.nodesource.com/setup_13.x 
     sudo apt-get update
     sudo apt install -y nodejs
     
