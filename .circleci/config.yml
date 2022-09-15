@@ -180,24 +180,37 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       - destroy-environment     
 
-  configure-infrastructure: 
+configure-infrastructure:
     docker:
-        - image: cimg/base:stable
+      - image: python:3.7-alpine3.11
+        environment:
+            ANSIBLE_HOST_KEY_CHECKING: "no"
     steps:
       - checkout
-      - install_ansible
       - add_ssh_keys:
           fingerprints: ["c8:24:5d:1f:20:25:45:f6:f9:d0:42:01:92:83:52:00"]
-      - attach_wrotkspace:
+          
+      - attach_workspace:
           at: ~/
-      - run:
-          name: configure server
-          command: |
-          cd .circleci/ansible
-          cat inventory.txt
-          ansible-playbook -i inventory.txt       
-      - destroy-enviroment:
 
+      - run:
+          name: Install dependencies
+          command: |
+            apk add curl
+            apk add --upgrade bash
+            apk add --update ansible
+            apk add openssh-client
+            pip3 install awscli
+            
+      - run:
+          name: Configure server
+          command: |
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt configure-server.yml
+     
+      - destroy-environment:
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+          event: on_fail
  
 
 
