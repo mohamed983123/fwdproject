@@ -30,7 +30,7 @@
   shell: |
     curl -sL https://deb.nodesource.com/setup_13.x 
     sudo apt-get update
-    sudo apt install -y nodejs
+    sudo apt install -y nodejs npm
     
 
 - name: "install pm2 Globally"
