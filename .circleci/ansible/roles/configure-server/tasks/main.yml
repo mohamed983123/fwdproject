@@ -5,9 +5,9 @@
     curl -sL https://deb.nodesource.com/setup_13.x 
 - name: "install node.js13"
   become: true
-  apt: 
-    name: ["nodejs"]
-    state: latest
+  shell: |
+    sudo apt-get install -y nodejs
+    
         
 
 - name: "install pm2 Globally"
