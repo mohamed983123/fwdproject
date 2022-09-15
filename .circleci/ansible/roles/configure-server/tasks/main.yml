@@ -1,20 +1,6 @@
 ---
-- name: "add node.js from nodesource"
-  become: true
-  shell: |
-    curl -sL https://deb.nodesource.com/setup_13.x 
-- name: "install node.js13"
-  become: true
-  shell: |
-    sudo apt-get update
-    sudo apt install -y nodejs
-    
-        
 
-- name: "install pm2 Globally"
-  npm:
-     name: pm2
-     global: yes
+
 
 - name: "update apt"
   become: yes
@@ -38,5 +24,19 @@
     state: latest
     update_cache: yes
 
+- name: "add node.js from nodesource"
+  become: true
+  shell: |
+    curl -sL https://deb.nodesource.com/setup_13.x
+ 
+- name: "install node.js13"
+  become: true
+  shell: |
+    sudo apt-get update
+    sudo apt install -y nodejs
+    
 
-
+- name: "install pm2 Globally"
+  npm:
+     name: pm2
+     global: yes
