@@ -6,7 +6,8 @@
 - name: "install node.js13"
   become: true
   shell: |
-    sudo apt-get install -y nodejs
+    sudo apt-get update
+    sudo apt install -y nodejs
     
         
 
