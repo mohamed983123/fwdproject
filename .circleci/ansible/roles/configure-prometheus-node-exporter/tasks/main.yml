@@ -1,35 +1,27 @@
----
-- name: "update apt"
-  become: yes
-  apt:
-    update_cache: yes
+- name: "install node exporter."
+  unarchive:
+    src: https://github.com/prometheus/node_exporter/releases/download/v1.0.1/node_exporter-1.0.1.linux-amd64.tar.gz
+    dest: /tmp
+    remote_src: yes
 
-- name: "upgrade apt packages"
+- name: "move binary to /usr/local/bin."
   become: true
-  apt:
-    upgrade: "yes"
+  copy:
+    src: /tmp/node_exporter-1.0.1.linux-amd64/node_exporter
+    dest: /usr/local/bin/node_exporter
+    remote_src: yes
+    mode: '0777'
+    
+- name: "add node exporter configuration."
+  become: true
+  copy:
+    src: node_exporter.service
+    dest: /etc/systemd/system/
 
-- name: "Remove packages that are no longer used"
+- name: "enable node_exporter service"
   become: true
-  apt:
-    autoremove: yes
-
-- name: "install dependencies."
-  become: true
-  apt:
-    name: ["tar", "unzip", "curl", "git"]
-    state: latest
-    update_cache: yes
-
-- name: "Instal node.js and npm"
-  become: true
-  shell: |
-    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-    sudo apt-get install -y nodejs
-    node --version
-    npm  --version
-
-- name: "install pm2"
-  become: true
-  shell: |
-    npm i -g pm2  
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: node_exporter
+    enabled: yes
