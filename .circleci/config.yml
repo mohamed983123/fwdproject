@@ -182,8 +182,7 @@ jobs:
 
   configure-infrastructure:
      docker:
-       - image: cimg/base:stable
-        
+       - image: cimg/base:stable        
      steps:
        - checkout
        - install_ansible
@@ -198,7 +197,7 @@ jobs:
            command: |
             cd .circleci/ansible
             cat inventory.txt
-            ansible-playbook -i inventory.txt configure-server.yaml
+            ansible-playbook -i inventory.txt configure-server.yml
           
        - destroy-environment:
           
