@@ -237,10 +237,7 @@ jobs:
               curl -k https://kvdb.io/CqU5Sjda4N7pmGX6P4d94R/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
             fi
 
-      - destroy-environment:
-          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-          event: on_fail      
-
+      
 
 
 
