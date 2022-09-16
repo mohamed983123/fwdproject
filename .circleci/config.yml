@@ -214,9 +214,7 @@ jobs:
           cat inventory.txt
           ansible-playbook -i inventory.txt configure-server.yml
           
-      - restore_cache:
-         keys: [backend-deps]  
-          
+                 
   run-migrations:
     docker:
       - image: cimg/node:13.8.0
@@ -225,7 +223,8 @@ jobs:
       - install_awscli
       - restore_cache:
          keys: [backend-deps]
-     
+      - attach_workspace:
+           at: ~/
       - run:
           name: Run migrations
           command: |
