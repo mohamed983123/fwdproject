@@ -238,18 +238,82 @@ jobs:
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then 
               echo "has been done successfully"
-              curl -k https://kvdb.io/CqU5Sjda4N7pmGX6P4d94R/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl -k https://kvdb.io/VCGRXuxX6vzpWJKuc3iPSJ/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             else
               echo "has failed"
-              curl -k https://kvdb.io/CqU5Sjda4N7pmGX6P4d94R/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
+              curl -k https://kvdb.io/VCGRXuxX6vzpWJKuc3iPSJ/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
             fi
 
       
 
+  deploy-frontend:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - install_awscli
+      - install_nodejs
+      - restore_cache:
+          keys: [frontend-deps]
+      - run:
+          name: Install dependencies
+          command: |
+            cd frontend
+            npm install
+      - run:
+          name: Get backend url
+          command: |
+            BACKEND_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
+      - run:
+          name: Deploy frontend objects
+          command: |
+            cd frontend
+            npm install
+            npm run build
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
 
 
-
-
+  deploy-backend:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - install_awscli
+      - install_ansible
+      - install_nodejs
+      - add_ssh_keys:
+          fingerprints: ["c8:24:5d:1f:20:25:45:f6:f9:d0:42:01:92:83:52:00"]
+      - attach_workspace:
+          at: ~/
+      - restore_cache:
+          keys: [backend-deps]    
+      - run:
+          name: Install dependencies
+          command: |
+            cd backend
+            npm install
+      - run:
+          name: Deploy backend
+          command: |
+            cd backend
+            npm install
+            npm run build
+            #tar -czvf artifact.tar.gz dist
+            #cp artifact.tar.gz .circleci/ansible/roles/deploy/files
+            cd ..
+            # Zip the directory
+            tar -czvf artifact.tar.gz backend
+            cp artifact.tar.gz .circleci/ansible/roles/deploy/files
+            export TYPEORM_MIGRATIONS_DIR=./migrations
+            export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
+            export TYPEORM_MIGRATIONS=./migrations/*.ts
+            
+            cd .circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
 
 
 
@@ -260,6 +324,14 @@ jobs:
 
 
  
+
+
+
+
+
+
+
+
 
 workflows:
   default:
@@ -283,3 +355,7 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
