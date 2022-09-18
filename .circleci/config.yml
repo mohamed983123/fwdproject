@@ -339,11 +339,15 @@ jobs:
           name: Deploy backend
           command: |
             tar -c backend -czvf artifact.tar.gz
+            echo "---------------------"
+            ls
+            echo "---------------------"
             mkdir .circleci/ansible/roles/deploy/files
             cp artifact.tar.gz .circleci/ansible/roles/deploy/files
-            export TYPEORM_MIGRATIONS_DIR=./migrations
-            export TYPEORM_ENTITIES=./modules/domain/**/*.entity.ts
-            export TYPEORM_MIGRATIONS=./migrations/*.ts
+            ls .circleci/ansible/roles/deploy/files
+            # export TYPEORM_MIGRATIONS_DIR=./migrations
+            # export TYPEORM_ENTITIES=./modules/domain/**/*.entity.ts
+            # export TYPEORM_MIGRATIONS=./migrations/*.ts
             
             cd .circleci/ansible
             cat inventory.txt
@@ -466,18 +470,18 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
+      # - build-frontend
+      # - build-backend
+      # - test-frontend:
+      #     requires: [build-frontend]
+      # - test-backend:
+      #     requires: [build-backend]
+      # - scan-backend:
+      #     requires: [build-backend]
+      # - scan-frontend:
+      #     requires: [build-frontend]
       - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
             branches:
               only: [master]
