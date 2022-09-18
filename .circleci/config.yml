@@ -325,17 +325,15 @@ jobs:
       - restore_cache:
           keys: [backend-deps]    
       - run:
-          name: Install dependencies
+          name: Build Backend
           command: |
             cd backend
-            npm install
+            npm i
+            npm run build
+            cd ..
       - run:
           name: Deploy backend
           command: |
-            cd backend
-            npm install
-            npm run build
-            cd ..
             tar -c backend -czvf artifact.tar.gz
             cp artifact.tar.gz .circleci/ansible/roles/deploy/files
             export TYPEORM_MIGRATIONS_DIR=./migrations

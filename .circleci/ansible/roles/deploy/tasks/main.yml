@@ -40,6 +40,9 @@
     src: "artifact.tar.gz"
     dest: "~/"
 
+- name: "Show Content"
+  shell: ls
+
 - name: "Unarchive"
   unarchive:
     src: artifact.tar.gz
@@ -54,9 +57,6 @@
     pm2 start npm -- start
   # register: execute_node
 
-- name: print message
-  debug:
-    msg: "{{ execute_node.stdout_lines }}"
 
 - name: "Configure pm2 to start as service"
   become: true
