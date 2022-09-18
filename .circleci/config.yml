@@ -190,7 +190,7 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/node:13.8.0
     steps:
       - checkout 
       - install_awscli
@@ -342,7 +342,7 @@ jobs:
             tar -czvf artifact.tar.gz backend
             cp artifact.tar.gz .circleci/ansible/roles/deploy/files
             export TYPEORM_MIGRATIONS_DIR=./migrations
-            export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
+            export TYPEORM_ENTITIES=./modules/domain/**/*.entity.ts
             export TYPEORM_MIGRATIONS=./migrations/*.ts
             
             cd .circleci/ansible
