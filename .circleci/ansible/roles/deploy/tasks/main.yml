@@ -41,7 +41,10 @@
     dest: "~/"
 
 - name: "Show Content"
-  shell: ls
+  shell: |
+    pwd
+    echo "----------------"
+    ls
 
 - name: "Unarchive"
   unarchive:

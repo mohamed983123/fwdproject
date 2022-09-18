@@ -325,6 +325,10 @@ jobs:
       - restore_cache:
           keys: [backend-deps]    
       - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get -y install gzip tar
+      - run:
           name: Build Backend
           command: |
             cd backend
@@ -335,6 +339,7 @@ jobs:
           name: Deploy backend
           command: |
             tar -c backend -czvf artifact.tar.gz
+            mkdir .circleci/ansible/roles/deploy/files
             cp artifact.tar.gz .circleci/ansible/roles/deploy/files
             export TYPEORM_MIGRATIONS_DIR=./migrations
             export TYPEORM_ENTITIES=./modules/domain/**/*.entity.ts
